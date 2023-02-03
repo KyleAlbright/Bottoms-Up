@@ -53,6 +53,7 @@ router.get('/', withAuth, async (req, res) => {
       csvData
     });
   } catch (err) {
+    console.log(err)
     res.status(500).json(err);
   }
 });

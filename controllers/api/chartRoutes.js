@@ -18,6 +18,7 @@ router.get('/', withAdmin, async (req, res) => {
       quantityData,
     });
   } catch (err) {
+    console.log(err)
     res.status(500).json(err);
   }
 });
