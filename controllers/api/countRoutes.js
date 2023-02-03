@@ -53,9 +53,9 @@ router.get('/', withAuth, async (req, res) => {
       csvData
     });
   } catch (err) {
-    console.log(err)
-    // res.status(500).json(err);
-    res.status(500).redirect("/")
+    
+    res.status(500).json(err);
+   
   }
 });
 
