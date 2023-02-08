@@ -5,16 +5,12 @@ const sendEmail = require('../../utils/sendEmail');
 const sendOrder = require('../../utils/sendOrder');
 
 router.get('/', withAuth, async (req, res) => {
- let inventoryData
-  try {
-    // get all projects and JOIN with user data
-     inventoryData = await Inventory.findAll({
-      order: [['quantity', 'ASC']],      
-    });} catch (err) {
-    
-      res.status(500).json(err);
-     
-    }
+ try {
+  // get all projects and JOIN with user data
+  const inventoryData = await Inventory.findAll({
+    order: [['quantity', 'ASC']],      
+  });
+
 
     // serialize data so the template can read it
     const inventories = inventoryData.map((stock) => stock.get({ plain: true }));
@@ -62,7 +58,10 @@ router.get('/', withAuth, async (req, res) => {
       state,
       csvData
     });
-  
+   } catch (err) {
+    res.status(500).json(err);
+  }
+
 });
 
 module.exports = router;
