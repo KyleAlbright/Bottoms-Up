@@ -5,11 +5,16 @@ const sendEmail = require('../../utils/sendEmail');
 const sendOrder = require('../../utils/sendOrder');
 
 router.get('/', withAuth, async (req, res) => {
+ let inventoryData
   try {
     // get all projects and JOIN with user data
-    const inventoryData = await Inventory.findAll({
+     inventoryData = await Inventory.findAll({
       order: [['quantity', 'ASC']],      
-    });
+    });} catch (err) {
+    
+      res.status(500).json(err);
+     
+    }
 
     // serialize data so the template can read it
     const inventories = inventoryData.map((stock) => stock.get({ plain: true }));
@@ -30,7 +35,9 @@ router.get('/', withAuth, async (req, res) => {
           state[i] = 1;
         } else {
           state[i] = 0;
-          sendEmail(product[i]);
+          sendEmail(product[i])
+          .catch((err) => { alert(err)}
+          );
           orderData.push(inventories[i]);
         }
       }
@@ -40,8 +47,11 @@ router.get('/', withAuth, async (req, res) => {
     const csvData = JSON.stringify(orderData);
 
     if (orderData.length > 0){
-      sendOrder(csvData);
-    }
+      sendOrder(csvData)
+      .catch((err) => { console.log(err)}
+      )
+     
+    } 
   
     // pass serialized data and session flag into template
     res.render('count', { 
@@ -52,11 +62,7 @@ router.get('/', withAuth, async (req, res) => {
       state,
       csvData
     });
-  } catch (err) {
-    
-    res.status(500).json(err);
-   
-  }
+  
 });
 
 module.exports = router;
